@@ -18,6 +18,7 @@ import {
 import { CartItem, Product } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { RxCross2 } from "react-icons/rx";
 
 export default function Header() {
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -45,6 +46,26 @@ export default function Header() {
     }
   };
 
+  const handleRemoveFromCart = async (productId: string) => {
+    try {
+      setCartLoading(true);
+      const response = await fetch("/api/cart/remove", {
+        method: "POST",
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove item from cart");
+      }
+
+      await fetchCartItems();
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    } finally {
+      setCartLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (cartView) {
       fetchCartItems();
@@ -58,7 +79,7 @@ export default function Header() {
   }, [status, session]);
 
   return (
-    <div className="w-full h-[64px] shadow-md bg-white fixed z-50 top-0 p-3 flex justify-between items-center">
+    <div className="w-full h-[64px] bg-black/60 backdrop-blur-md text-white fixed z-50 top-0 p-3 flex justify-between items-center">
       <Link href="/">
         <div className="flex justify-center items-center gap-1 text-xl font-bold">
           <FaShoppingBag />
@@ -69,7 +90,12 @@ export default function Header() {
         {initialLoading && status === "loading" ? (
           <BiLoaderCircle className="animate-spin" />
         ) : !session ? (
-          <Button onClick={() => signIn("google")}>Login</Button>
+          <Button
+            className="bg-white text-black hover:bg-gray-300 hover:text-black"
+            onClick={() => signIn("google")}
+          >
+            Login
+          </Button>
         ) : (
           <div className="flex gap-3 justify-center items-center">
             <Sheet open={cartView} onOpenChange={setCartView}>
@@ -81,7 +107,7 @@ export default function Header() {
                   <FaCartShopping />
                 </Button>
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent className="w-full">
                 <SheetHeader>
                   <SheetTitle>Your Cart</SheetTitle>
                 </SheetHeader>
@@ -98,32 +124,85 @@ export default function Header() {
                         <BiLoaderCircle className="animate-spin" />
                       </motion.div>
                     ) : (
-                      <div key="cart-items" className="flex gap-1.5 flex-col">
-                        {cartItems.map((item) => (
-                          <motion.div
-                            key={item.id}
-                            className="p-3 rounded-md bg-black/5 flex items-center gap-2 h-fit"
-                          >
-                            <div className="w-16 h-16 overflow-hidden bg-white relative aspect-square shrink-0 p-1 rounded-sm">
-                              <Image
-                                width={64}
-                                height={64}
-                                src={item.product.imageUrl}
-                                alt={item.product.name}
-                                className="w-full h-full object-contain"
+                      <div
+                        key="cart-items"
+                        className="flex gap-1.5 flex-col w-full"
+                      >
+                        {cartItems.length > 0 ? (
+                          cartItems.map((item, index) => (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                filter: "blur(5px)",
+                                scale: 0.95,
+                              }}
+                              exit={{
+                                opacity: 0,
+                                filter: "blur(5px)",
+                                scale: 0.95,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                filter: "blur(0px)",
+                                scale: 1,
+                              }}
+                              transition={{ delay: index * 0.10 }}
+                              key={item.id}
+                              className="p-3 rounded-md bg-black/5 flex items-center gap-2 h-fit w-full relative group"
+                            >
+                              <div className="w-16 h-16 overflow-hidden bg-white relative aspect-square shrink-0 p-1 rounded-sm">
+                                <Image
+                                  width={64}
+                                  height={64}
+                                  src={item.product.imageUrl}
+                                  alt={item.product.name}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                              <div className="flex-grow">
+                                <p className="text-sm font-medium">
+                                  {item.product.name}
+                                </p>
+                                <p className="text-sm text-red-500 font-bold">
+                                  {item.quantity} x ₹
+                                  {String(item.product.price)} ={" "}
+                                  {"₹" +
+                                    String(
+                                      item.quantity * Number(item.product.price)
+                                    )}
+                                </p>
+                              </div>
+                              <RxCross2
+                                onClick={() =>
+                                  handleRemoveFromCart(item.productId)
+                                }
+                                size={20}
+                                className="absolute opacity-0 group-hover:opacity-100 top-2 right-2 text-gray-500 hover:text-red-500 transition-all cursor-pointer hover:bg-white rounded-full p-1"
                               />
-                            </div>
-
-                            <div>
-                              <p className="text-sm font-medium">
-                                {item.product.name}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                {item.quantity} x ₹{String(item.product.price)}
-                              </p>
-                            </div>
+                            </motion.div>
+                          ))
+                        ) : (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              filter: "blur(5px)",
+                              scale: 0.95,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              filter: "blur(5px)",
+                              scale: 0.95,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              filter: "blur(0px)",
+                              scale: 1,
+                            }}
+                            className="text-center text-black/60 text-sm size-full flex justify-center items-center"
+                          >
+                            Your cart is empty
                           </motion.div>
-                        ))}
+                        )}{" "}
                       </div>
                     )}
                   </AnimatePresence>

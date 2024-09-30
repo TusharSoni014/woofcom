@@ -30,9 +30,9 @@ export function HeroSection({ backgroundImg = "" }: { backgroundImg: string }) {
         <Button
           asChild
           size="lg"
-          className="bg-white text-black hover:bg-gray-200 hover:text-black transition-colors"
+          className="bg-white w-fit mx-auto text-black hover:bg-gray-200 hover:text-black transition-colors font-bold text-xl max-h-full h-full !py-3"
         >
-          <Link href="#shop">Shop Now</Link>
+          <Link className="font-bold text-3xl" href="#shop">Shop Now</Link>
         </Button>
       </div>
 

@@ -21,10 +21,7 @@ export default function ProductItem({ product }: { product: Product }) {
   };
 
   return (
-    <Card className="w-full h-full flex flex-col justify-between rounded-none shadow-none">
-      <CardHeader>
-        <CardTitle className="text-lg">{name}</CardTitle>
-      </CardHeader>
+    <Card className="w-full h-full flex flex-col justify-between rounded-none shadow-none p-3">
       <CardContent>
         <div className="aspect-square relative mb-4">
           <Image
@@ -34,7 +31,8 @@ export default function ProductItem({ product }: { product: Product }) {
             className="object-cover rounded-md"
           />
         </div>
-        <p className="text-xl font-bold">₹{String(price)}</p>
+        <CardTitle className="text-lg">{name}</CardTitle>
+        <p className="text-xl font-bold text-green-600">₹{String(price)}</p>
       </CardContent>
       <CardFooter className="flex justify-between gap-1.5">
         <Button className="w-full rounded-none" onClick={handleAddToCart}>
