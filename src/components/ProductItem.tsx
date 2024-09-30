@@ -37,7 +37,9 @@ export default function ProductItem({ product }: { product: Product }) {
         <p className="text-xl font-bold">₹{String(price)}</p>
       </CardContent>
       <CardFooter className="flex justify-between gap-1.5">
-        <Button className="w-full rounded-none" onClick={handleAddToCart}>Add to Cart</Button>
+        <Button className="w-full rounded-none" onClick={handleAddToCart}>
+          Add to Cart
+        </Button>
         <Button className="w-full rounded-none" variant="outline" asChild>
           <Link href={`/product/${id}`}>Visit Product</Link>
         </Button>
