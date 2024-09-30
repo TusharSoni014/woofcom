@@ -28,9 +28,21 @@ export default function Page() {
       });
     } else {
       try {
-        toast({
-          description: "Item added to cart!",
+        setCartAddLoading(true);
+        const response = await fetch("/api/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId: id }),
         });
+
+        const data = await response.json();
+        if (data.success) {
+          toast({
+            description: "Item added to cart!",
+          });
+        }
       } catch {
         toast({
           variant: "destructive",

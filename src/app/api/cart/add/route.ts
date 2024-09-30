@@ -20,22 +20,35 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    const cartItem = await prisma.cartItem.upsert({
+    const existingCartItem = await prisma.cartItem.findUnique({
       where: {
         userId_productId: {
           userId: session.user.id,
           productId: productId,
         },
       },
-      update: {
-        quantity: { increment: 1 },
-      },
-      create: {
-        userId: session.user.id,
-        productId: productId,
-        quantity: 1,
-      },
     });
+
+    let cartItem;
+
+    if (existingCartItem) {
+      cartItem = await prisma.cartItem.update({
+        where: {
+          id: existingCartItem.id,
+        },
+        data: {
+          quantity: existingCartItem.quantity + 1,
+        },
+      });
+    } else {
+      cartItem = await prisma.cartItem.create({
+        data: {
+          userId: session.user.id,
+          productId: productId,
+          quantity: 1,
+        },
+      });
+    }
 
     return NextResponse.json({ success: true, cartItem }, { status: 200 });
   } catch (error) {
