@@ -7,7 +7,16 @@ This project is an implementation of an e-commerce store with cart functionality
 - Add items to cart
 - Checkout functionality
 - Coupon code system (10% discount for every nth order)
+- Order history page for authenticated users
+- Discount code functionality - form to enter code on checkout page, validation on backend
 - Admin APIs for generating discount codes and viewing analytics
+
+## Discount Coupons
+
+There are only two discount coupons I've added in the DB for testing
+
+- `tushar` (10% off)
+- `offer50` (50% off)
 
 ## Tech Stack
 
