@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Uniblox E-commerce Store
 
-## Getting Started
+This project is an implementation of an e-commerce store with cart functionality, checkout process, and admin features. It's built using Next.js for both frontend and backend, with Prisma and PostgreSQL for database management.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Add items to cart
+- Checkout functionality
+- Coupon code system (10% discount for every nth order)
+- Admin APIs for generating discount codes and viewing analytics
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 14.2.13
+- React 18
+- Prisma with PostgreSQL
+- NextAuth.js for authentication
+- Framer Motion for animations
+- Tailwind CSS for styling
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Endpoints
 
-## Learn More
+### Cart
 
-To learn more about Next.js, take a look at the following resources:
+- `POST /api/cart/add`: Add item to cart
+- `POST /api/cart/remove`: Remove item from cart
+- `GET /api/cart/get`: Get cart items
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Checkout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `POST /api/checkout`: Process checkout and apply coupon if valid
 
-## Deploy on Vercel
+### Coupon
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `POST /api/coupon`: Validate and apply coupon code
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Admin
+
+- `GET /api/admin/analytics`: Get store analytics
+- `POST /api/admin/coupon/create`: Create new coupon code
+
+### Orders
+
+- `GET /api/orders`: Get user's order history
+
+## Frontend Pages
+
+- `/`: Home page with product listing
+- `/product/[id]`: Individual product page
+- `/checkout`: Checkout page
+- `/orders`: Order history page
+
+## Setup and Installation
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up your PostgreSQL database
+4. Configure your `.env` file with database credentials
+5. Run Prisma migrations: `npx prisma migrate dev`
+6. Start the development server: `npm run dev`
+
+## Additional Notes
+
+- The project uses an actual database (PostgreSQL) instead of an in-memory store for data persistence.
+- Authentication is implemented using NextAuth.js.
+- The frontend is built with React and uses Framer Motion for animations.
+- Tailwind CSS is used for styling, providing a responsive and modern UI.
+
+## Stretch Goals Achieved
+
+- Fully functional UI showcasing all features
+- Backend implementation with Next.js API routes
+- Database integration with Prisma and PostgreSQL
+- User authentication
+
+## Future Improvements
+
+- Implement unit tests
+- Add more comprehensive error handling
+- Enhance admin dashboard with more features
