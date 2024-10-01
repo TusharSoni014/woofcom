@@ -44,7 +44,6 @@ export default function Header() {
         throw new Error("Failed to fetch cart items");
       }
       const cartItems = await response.json();
-      console.log(cartItems);
       setCartItems(cartItems);
     } catch (error) {
       console.error("Error fetching cart items:", error);
@@ -114,11 +113,11 @@ export default function Header() {
                   <FaCartShopping />
                 </Button>
               </SheetTrigger>
-              <SheetContent className="w-full">
+              <SheetContent className="w-full flex flex-col gap-2">
                 <SheetHeader>
                   <SheetTitle>Your Cart</SheetTitle>
                 </SheetHeader>
-                <div className="w-full h-[calc(100%-30px)] flex gap-3 overflow-y-auto">
+                <div className="w-full flex-grow h-[calc(100%-70px)] flex gap-3 overflow-y-auto">
                   <AnimatePresence mode="wait">
                     {cartLoading ? (
                       <motion.div
@@ -205,7 +204,7 @@ export default function Header() {
                               filter: "blur(0px)",
                               scale: 1,
                             }}
-                            className="text-center text-black/60 text-sm size-full flex justify-center items-center"
+                            className="text-center text-black/60 text-sm flex justify-center items-center"
                           >
                             Your cart is empty
                           </motion.div>
@@ -214,6 +213,31 @@ export default function Header() {
                     )}
                   </AnimatePresence>
                 </div>
+                {cartItems.length > 0 && (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      filter: "blur(5px)",
+                    }}
+                    exit={{
+                      opacity: 0,
+                      filter: "blur(5px)",
+                    }}
+                    animate={{
+                      opacity: 1,
+                      filter: "blur(0px)",
+                    }}
+                  >
+                    <Link href="/checkout">
+                      <Button
+                        onClick={() => setCartView(false)}
+                        className="w-full bg-green-600 hover:bg-green-700"
+                      >
+                        Checkout
+                      </Button>
+                    </Link>
+                  </motion.div>
+                )}
               </SheetContent>
             </Sheet>
             <Popover>

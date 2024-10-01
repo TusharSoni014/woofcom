@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  AnimatePresence,
-  AnimationProps,
-  motion,
-  VariantLabels,
-} from "framer-motion";
+import { AnimatePresence, AnimationProps, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { BiLoaderCircle } from "react-icons/bi";
 
@@ -97,18 +92,18 @@ export default function Page() {
               <tbody>
                 {orders &&
                   orders.map((order) => (
-                    <tr key={order.id}>
-                      <td>{order.id}</td>
-                      <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                      <td>{order.status}</td>
-                      <td>${order.totalPrice.toFixed(2)}</td>
-                      <td>
+                    <tr key={order.id} className="border-b">
+                      <td className="p-3">{order.id}</td>
+                      <td className="p-3">{new Date(order.orderDate).toLocaleDateString()}</td>
+                      <td className="p-3">{order.status}</td>
+                      <td className="p-3">₹{String(order.totalPrice)}</td>
+                      <td className="p-3">
                         {order.discountedPrice
-                          ? `$${order.discountedPrice.toFixed(2)}`
+                          ? `${order.discountedPrice.toFixed(2)}`
                           : "N/A"}
                       </td>
-                      <td>{order.couponCode || "N/A"}</td>
-                      <td>{order.products.join(", ")}</td>
+                      <td className="p-3">{order.couponCode || "N/A"}</td>
+                      <td className="p-3">{order.products.join(", ")}</td>
                     </tr>
                   ))}
               </tbody>

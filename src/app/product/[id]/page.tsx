@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Loader2, ShoppingCart } from "lucide-react";
 import { BiLoaderCircle } from "react-icons/bi";
 import { useSession } from "next-auth/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, AnimationProps, motion } from "framer-motion";
 
 export default function Page() {
   const { id } = useParams();
@@ -76,14 +76,29 @@ export default function Page() {
     fetchProduct();
   }, [id, toast]);
 
+  const initialAnimation: AnimationProps["initial"] = {
+    opacity: 0,
+    filter: "blur(5px)",
+  };
+
+  const finalAnimation: AnimationProps["animate"] = {
+    opacity: 1,
+    filter: "blur(0px)",
+  };
+
+  const exitAnimation: AnimationProps["exit"] = {
+    opacity: 0,
+    filter: "blur(5px)",
+  };
+
   return (
     <AnimatePresence mode="wait">
       {loading ? (
         <motion.div
           key="loading"
-          initial={{ opacity: 0, filter: "blur(5px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          exit={{ opacity: 0, filter: "blur(5px)" }}
+          initial={initialAnimation}
+          animate={finalAnimation}
+          exit={exitAnimation}
           className="w-full min-h-dvh flex justify-center items-center"
         >
           <BiLoaderCircle className="animate-spin" />
@@ -91,9 +106,9 @@ export default function Page() {
       ) : !product ? (
         <motion.div
           key="product-not-found"
-          initial={{ opacity: 0, filter: "blur(5px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          exit={{ opacity: 0, filter: "blur(5px)" }}
+          initial={initialAnimation}
+          animate={finalAnimation}
+          exit={exitAnimation}
           className="w-full min-h-dvh flex justify-center items-center"
         >
           Product not found
@@ -101,9 +116,9 @@ export default function Page() {
       ) : (
         <motion.div
           key="product-loaded"
-          initial={{ opacity: 0, filter: "blur(5px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          exit={{ opacity: 0, filter: "blur(5px)" }}
+          initial={initialAnimation}
+          animate={finalAnimation}
+          exit={exitAnimation}
           transition={{ duration: 0.3 }}
           className="max-w-6xl min-h-dvh mx-auto p-4 md:p-6 lg:p-8 !pt-[76px] "
         >
