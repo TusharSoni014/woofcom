@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Provider from "./provider";
 import Header from "@/components/Header";
-import StoreProvider from "./StoreProvider";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -42,12 +41,10 @@ export default function RootLayout({
           forcedTheme="light"
         >
           <Provider>
-            <StoreProvider>
-              <Header />
-              {children}
-              <Footer />
-              <Toaster />
-            </StoreProvider>
+            <Header />
+            {children}
+            <Footer />
+            <Toaster />
           </Provider>
         </ThemeProvider>
       </body>
