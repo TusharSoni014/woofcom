@@ -21,17 +21,16 @@ enum OrderStatus {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String       @unique
+  email         String     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   cartItems     CartItem[]
-  coupons       CouponUser[]
   orders        Order[]
 }
 
@@ -41,6 +40,8 @@ model Order {
   userId    String
   total     Decimal     @db.Decimal(10, 2)
   status    OrderStatus
+  coupon    Coupon?     @relation(fields: [couponId], references: [id])
+  couponId  String?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   items     OrderItem[]
@@ -59,22 +60,12 @@ model OrderItem {
 }
 
 model Coupon {
-  id            String       @id @default(cuid())
-  code          String       @unique
+  id            String   @id @default(cuid())
+  code          String   @unique
   percentageOff Int
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  users         CouponUser[]
-}
-
-model CouponUser {
-  id       String @id @default(cuid())
-  couponId String
-  userId   String
-  coupon   Coupon @relation(fields: [couponId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
-
-  @@unique([couponId, userId])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
 }
 
 model Product {

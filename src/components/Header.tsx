@@ -8,6 +8,13 @@ import Link from "next/link";
 import { BiLoaderCircle } from "react-icons/bi";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { FaCartShopping } from "react-icons/fa6";
+import { CiShop } from "react-icons/ci";
+import { IoMdLogOut } from "react-icons/io";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Sheet,
   SheetContent,
@@ -102,7 +109,7 @@ export default function Header() {
               <SheetTrigger asChild>
                 <Button
                   size="icon"
-                  className="rounded-full bg-white shadow-md text-black hover:text-white"
+                  className="rounded-full bg-blue-600 shadow-md text-white hover:text-white"
                 >
                   <FaCartShopping />
                 </Button>
@@ -146,7 +153,7 @@ export default function Header() {
                                 filter: "blur(0px)",
                                 scale: 1,
                               }}
-                              transition={{ delay: index * 0.10 }}
+                              transition={{ delay: index * 0.1 }}
                               key={item.id}
                               className="p-3 rounded-md bg-black/5 flex items-center gap-2 h-fit w-full relative group"
                             >
@@ -209,15 +216,30 @@ export default function Header() {
                 </div>
               </SheetContent>
             </Sheet>
-            <Button onClick={() => signOut()} variant="destructive">
-              Logout
-            </Button>
-            <Avatar>
-              <AvatarImage src={session.user?.image || ""} />
-              <AvatarFallback className="capitalize">
-                {session.user.name?.slice(0, 2)}
-              </AvatarFallback>
-            </Avatar>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage src={session.user?.image || ""} />
+                  <AvatarFallback className="capitalize text-black select-none">
+                    {session.user.name?.slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+              </PopoverTrigger>
+              <PopoverContent className="w-[180px] p-2 flex flex-col gap-2">
+                <Button className="w-full" variant="outline">
+                  <CiShop />
+                  <Link href="/orders">Orders</Link>
+                </Button>
+                <Button
+                  className="w-full"
+                  onClick={() => signOut()}
+                  variant="destructive"
+                >
+                  <IoMdLogOut />
+                  Logout
+                </Button>
+              </PopoverContent>
+            </Popover>
           </div>
         )}
       </div>

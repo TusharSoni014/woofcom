@@ -3,21 +3,50 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Product } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export default function ProductItem({ product }: { product: Product }) {
   const { id, name, price, imageUrl } = product;
+  const { data: session } = useSession();
+  const { toast } = useToast();
+  const [cartAddLoading, setCartAddLoading] = useState<boolean>(false);
 
-  const handleAddToCart = () => {
-    // TODO: Implement add to cart functionality
-    console.log(`Added ${name} to cart`);
+  const handleAddToCart = async () => {
+    if (!session) {
+      toast({
+        variant: "destructive",
+        description: "Please login to add items to cart",
+      });
+    } else {
+      try {
+        setCartAddLoading(true);
+        const response = await fetch("/api/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId: id }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          toast({
+            description: "Item added to cart!",
+          });
+        }
+      } catch {
+        toast({
+          variant: "destructive",
+          description: "Error adding to cart",
+        });
+      } finally {
+        setCartAddLoading(false);
+      }
+    }
   };
 
   return (
@@ -35,7 +64,11 @@ export default function ProductItem({ product }: { product: Product }) {
         <p className="text-xl font-bold text-green-600">₹{String(price)}</p>
       </CardContent>
       <CardFooter className="flex justify-between gap-1.5">
-        <Button className="w-full rounded-none" onClick={handleAddToCart}>
+        <Button
+          loading={cartAddLoading}
+          className="w-full rounded-none"
+          onClick={handleAddToCart}
+        >
           Add to Cart
         </Button>
         <Button className="w-full rounded-none" variant="outline" asChild>
