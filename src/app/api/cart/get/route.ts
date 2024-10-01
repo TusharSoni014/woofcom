@@ -3,6 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Retrieves the cart items for the authenticated user.
+ *
+ * @returns {Promise<NextResponse>} - A JSON response containing the user's cart items.
+ */
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);

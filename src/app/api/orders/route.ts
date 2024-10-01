@@ -3,6 +3,15 @@ import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/authOptions";
 
+/**
+ * Fetches the orders for the authenticated user and returns them in a formatted response.
+ *
+ * This API endpoint is used to retrieve the orders associated with the currently authenticated user.
+ * It first checks if a valid session exists, and if so, it fetches the orders from the database using Prisma.
+ * The orders are then formatted and returned as a JSON response.
+ *
+ * @returns {Promise<NextResponse<any>>} A JSON response containing the user's orders.
+ */
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);

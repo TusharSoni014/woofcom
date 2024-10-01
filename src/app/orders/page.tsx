@@ -19,6 +19,12 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Fetches the user's recent orders from the server and updates the state with the response data.
+     * If the response is not an array, logs an error and sets the orders state to an empty array.
+     * If an error occurs during the fetch, logs the error and sets the orders state to an empty array.
+     * Finally, sets the isLoading state to false to indicate that the data has been fetched.
+     */
     const fetchOrders = async () => {
       try {
         const response = await fetch("/api/orders");

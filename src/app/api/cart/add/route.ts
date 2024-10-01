@@ -3,6 +3,12 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Handles the POST request to add a product to the user's cart.
+ *
+ * @param req - The incoming request object.
+ * @returns A JSON response indicating the success or failure of the operation.
+ */
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 

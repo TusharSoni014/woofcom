@@ -1,6 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+/**
+ * Handles the GET request for a specific product by its ID.
+ *
+ * @param request - The incoming HTTP request.
+ * @param params - The route parameters, containing the product ID.
+ * @returns A JSON response with the product data, or an error message if the product is not found or an internal error occurs.
+ */
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }

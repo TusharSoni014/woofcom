@@ -3,6 +3,14 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/authOptions";
 
+/**
+ * Removes a product from the user's cart.
+ *
+ * This API endpoint is used to remove a product from the authenticated user's cart.
+ *
+ * @param req - The incoming HTTP request object.
+ * @returns A JSON response indicating the success or failure of the operation.
+ */
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);

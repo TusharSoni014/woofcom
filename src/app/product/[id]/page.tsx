@@ -20,6 +20,15 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
+  /**
+   * Handles adding a product to the user's cart.
+   * 
+   * If the user is not logged in, it displays a toast message asking them to log in.
+   * Otherwise, it sends a POST request to the "/api/cart/add" endpoint with the product ID.
+   * If the request is successful, it displays a toast message indicating the item was added to the cart.
+   * If there is an error, it displays a toast message with the error.
+   * Finally, it sets the `cartAddLoading` state to false.
+   */
   const handleAddToCart = async () => {
     if (!session) {
       toast({
@@ -55,6 +64,13 @@ export default function Page() {
   };
 
   useEffect(() => {
+    /**
+     * Fetches the product data from the server based on the provided `id`.
+     * 
+     * If the fetch is successful, the product data is stored in the `product` state.
+     * If there is an error, a toast message is displayed with the error description.
+     * Finally, the `loading` state is set to `false` to indicate the fetch is complete.
+     */
     const fetchProduct = async () => {
       try {
         const response = await fetch(`/api/product/${id}`);
