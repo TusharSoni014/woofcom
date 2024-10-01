@@ -213,7 +213,7 @@ export default function Header() {
                     )}
                   </AnimatePresence>
                 </div>
-                {cartItems.length > 0 && (
+                {!cartLoading && cartItems.length > 0 ? (
                   <motion.div
                     initial={{
                       opacity: 0,
@@ -237,7 +237,7 @@ export default function Header() {
                       </Button>
                     </Link>
                   </motion.div>
-                )}
+                ) : null}
               </SheetContent>
             </Sheet>
             <Popover>
@@ -250,10 +250,12 @@ export default function Header() {
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-[180px] p-2 flex flex-col gap-2">
-                <Button className="w-full" variant="outline">
-                  <CiShop />
-                  <Link href="/orders">Orders</Link>
-                </Button>
+                <Link href="/orders">
+                  <Button className="w-full" variant="outline">
+                    <CiShop />
+                    Orders
+                  </Button>
+                </Link>
                 <Button
                   className="w-full"
                   onClick={() => signOut()}

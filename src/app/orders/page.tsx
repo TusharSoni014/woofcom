@@ -94,7 +94,9 @@ export default function Page() {
                   orders.map((order) => (
                     <tr key={order.id} className="border-b">
                       <td className="p-3">{order.id}</td>
-                      <td className="p-3">{new Date(order.orderDate).toLocaleDateString()}</td>
+                      <td className="p-3">
+                        {new Date(order.orderDate).toLocaleDateString()}
+                      </td>
                       <td className="p-3">{order.status}</td>
                       <td className="p-3">₹{String(order.totalPrice)}</td>
                       <td className="p-3">

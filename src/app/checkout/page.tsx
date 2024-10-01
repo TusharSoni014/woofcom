@@ -17,10 +17,20 @@ export default function Page() {
   >([]);
   const [cartLoading, setCartLoading] = useState<boolean>(false);
   const [checkoutLoading, setCheckoutLoading] = useState<boolean>(false);
+  const [couponLoading, setCouponLoading] = useState<boolean>(false);
   const [couponCode, setCouponCode] = useState<string>("");
+  const [percentageOff, setPercentageOff] = useState<number>(0);
   const { toast } = useToast();
   const router = useRouter();
 
+
+  /**
+   * Confirms the user's order and places it.
+   * @async
+   * @function handleConfirmOrder
+   * @returns {Promise<void>} - Resolves when the order has been placed successfully or an error has occurred.
+   * @throws {Error} - Throws an error if there was a problem placing the order.
+   */
   const handleConfirmOrder = async () => {
     try {
       setCheckoutLoading(true);
@@ -29,26 +39,95 @@ export default function Page() {
         body: JSON.stringify({ cartItems, couponCode }),
       });
 
-      if (!response.ok) {
-        throw new Error("Checkout failed");
-      }
-
       const data = await response.json();
-      console.log(data);
 
-      toast({ description: "Order placed successfully!" });
-      router.push("/");
+      if (response.ok) {
+        if (data.valid) {
+          toast({
+            description: "Order placed successfully!",
+          });
+          router.push("/");
+        } else {
+          toast({
+            variant: "destructive",
+            description:
+              data.message || "Failed to place order. Please try again.",
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          description: data.error || "Failed to place order. Please try again.",
+        });
+      }
     } catch (error) {
       console.error("Error during checkout:", error);
       toast({
         variant: "destructive",
-        description: "Failed to place order. Please try again.",
+        description: "An error occurred while placing the order.",
       });
     } finally {
       setCheckoutLoading(false);
     }
   };
 
+  /**
+   * Applies a coupon code to the user's cart and updates the discount percentage.
+   * @async
+   * @function handleApplyCoupon
+   * @returns {Promise<void>} - Resolves when the coupon has been applied successfully or an error has occurred.
+   * @throws {Error} - Throws an error if there was a problem applying the coupon.
+   */
+  const handleApplyCoupon = async () => {
+    try {
+      setCouponLoading(true);
+      const response = await fetch("/api/coupon", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code: couponCode }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.valid) {
+          toast({
+            description: `Coupon applied successfully! ${data.percentageOff}% off your order.`,
+          });
+          setPercentageOff(data.percentageOff);
+        } else {
+          toast({
+            variant: "destructive",
+            description: data.message,
+          });
+        }
+      } else {
+        toast({
+          variant: "destructive",
+          description:
+            data.error || "Failed to apply coupon. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      toast({
+        variant: "destructive",
+        description: "An error occurred while applying the coupon.",
+      });
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  /**
+   * Fetches the items in the user's cart from the server.
+   * @async
+   * @function fetchCartItems
+   * @returns {Promise<void>} - Resolves when the cart items have been fetched and stored in the component state.
+   * @throws {Error} - Throws an error if there was a problem fetching the cart items.
+   */
   const fetchCartItems = async () => {
     try {
       setCartLoading(true);
@@ -57,7 +136,6 @@ export default function Page() {
         throw new Error("Failed to fetch cart items");
       }
       const cartItems = await response.json();
-      console.log(cartItems);
       setCartItems(cartItems);
     } catch (error) {
       console.error("Error fetching cart items:", error);
@@ -66,6 +144,14 @@ export default function Page() {
     }
   };
 
+  /**
+   * Removes a product from the user's cart.
+   * @async
+   * @function handleRemoveFromCart
+   * @param {string} productId - The ID of the product to remove from the cart.
+   * @returns {Promise<void>} - Resolves when the product has been removed from the cart.
+   * @throws {Error} - Throws an error if there was a problem removing the item from the cart.
+   */
   const handleRemoveFromCart = async (productId: string) => {
     try {
       setCartLoading(true);
@@ -86,6 +172,8 @@ export default function Page() {
     }
   };
 
+  // Fetch cart items when the component mounts
+  // This ensures that the cart data is loaded and displayed when the user visits the checkout page
   useEffect(() => {
     fetchCartItems();
   }, []);
@@ -186,30 +274,35 @@ export default function Page() {
               <p className="text-lg font-semibold">Total Amount:</p>
               <p className="text-xl text-red-500 font-bold">
                 ₹
-                {cartItems
-                  .reduce(
+                {(
+                  cartItems.reduce(
                     (total, item) =>
                       total + item.quantity * Number(item.product.price),
                     0
-                  )
-                  .toFixed(2)}
+                  ) *
+                  (1 - percentageOff / 100)
+                ).toFixed(2)}
               </p>
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="couponCode"
-                className="block text-sm font-medium text-gray-700"
+            <div className="mb-4 w-full max-w-[500px] flex gap-1.5 mx-auto">
+              <div className="w-full">
+                <Input
+                  type="text"
+                  id="couponCode"
+                  name="couponCode"
+                  placeholder="Coupon Code (Optional)"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+              </div>
+              <Button
+                onClick={handleApplyCoupon}
+                disabled={couponCode.length === 0}
+                className="w-full"
+                loading={couponLoading}
               >
-                Coupon Code (optional):
-              </label>
-              <Input
-                type="text"
-                id="couponCode"
-                name="couponCode"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
+                Apply Coupon
+              </Button>
             </div>
             <Button
               loading={checkoutLoading}
