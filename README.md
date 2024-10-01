@@ -13,10 +13,11 @@ This project is an implementation of an e-commerce store with cart functionality
 
 ## Discount Coupons
 
-There are only two discount coupons I've added in the DB for testing
+There are only few discount coupons I've added in the DB for testing
 
 - `tushar` (10% off)
 - `offer50` (50% off)
+- `HireMe` (100% off)
 
 ## Tech Stack
 
@@ -72,7 +73,7 @@ There are only two discount coupons I've added in the DB for testing
 
 - The project uses an actual database (PostgreSQL) instead of an in-memory store for data persistence.
 - Authentication is implemented using NextAuth.js.
-- The frontend is built with React and uses Framer Motion for animations.
+- The frontend is built with Next.JS and uses Framer Motion for animations.
 - Tailwind CSS is used for styling, providing a responsive and modern UI.
 
 ## Stretch Goals Achieved
