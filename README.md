@@ -1,4 +1,4 @@
-# Uniblox E-commerce Store
+# Woofcom - E-commerce Store
 
 This project is an implementation of an e-commerce store with cart functionality, checkout process, and admin features. It's built using Next.js for both frontend and backend, with Prisma and PostgreSQL for database management.
 
